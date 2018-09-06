@@ -5,4 +5,8 @@
 #include "ALed.h"
 #endif
 
+#ifdef KLIB_ASTORAGE
+#include "AStorage.h"
+#endif
+
 #endif
