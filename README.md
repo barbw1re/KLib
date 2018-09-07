@@ -150,6 +150,29 @@ There is only a very naive validation of the pin provided to `Setup()` and unles
 Calling `On()` or `Off()` does not care if the LED is currently Blinking/Flashing/Pulsing so doing so may affect (invert) your programs concept of **On** and **Off**.
 
 
+### AStepper
+
+This module provides stepper motor control functionality. It is enabled via:
+
+```
+#define KLIB_ASTEPPER
+```
+
+
+#### Function Overview
+
+* `Setup(const byte pinA, const byte pinB, const byte pinC, const byte pinD, const unsigned int stepsPerRevolution)` - Initialise stepper motor on specified pins configured for specified steps corresponding to a complete revolution.
+* `Automate()` - Configure the module to maintain it's own timer for rotating the stepper motor. Calling this removes the requirement to regularly call `Update()` to ensure the non-blocking rotation occurs.
+* `Rotate(const float revolutions, const bool forward = true, const unsigned int speed = 0)` - Start rotating the stepper motor (forward or backward according to `forward` parameter provided) at `speed` RPM (or a reasonable default if `0`), and continue for `revolutions` revolutions (a decimal float - for example `1.0` is a single revolution, `0.25` is a quarter revolution.
+* `Stop()` - Stop stepper motor immediately.
+* `Update()` - Call in main loop to ensure non-blocking motor rotation occurs (only needed when not using `Automate()` mode).
+
+
+#### Notes
+
+The stepper motor is configured to run in 9-step mode so if you are used to running in 4-step mode (a-la the standard `<Stepper.h>`) you might find your "Steps per Revolution" are only giving you 1/2 a revolution - just double it!
+
+
 ### AStorage
 
 This module provides EEPROM storage (and retrieval) functionality. It is enabled via:
@@ -216,3 +239,4 @@ storage.Read(&b, sizeof(int));
 To achieve this you will need to create a struct containing ints `a` and `b`.
 
 If an elegant way of specifying an offset presents itself (such as something like `storage.ReadFrom(100, &c, sizeof(int));`), it may be implemented.
+
