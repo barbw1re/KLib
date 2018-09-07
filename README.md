@@ -64,6 +64,13 @@ ADEBUG_WRITE(F("Started Blink Code"));
 ```
 
 
+### Performance Impact
+
+It should be noted that triggering `ADEBUG_ASSERT()` will consume anywhere from 50 - 100ms to generate and output the error message. This should not be a concern, as if `ADEBUG_ASSERT()` is triggered, it should be an indication of an issue with the sketch, so the goal should be to never have an `ADEBUG_ASSERT()` fail.
+
+**Still To Do**: Profile the other functions (especially `ADEBUG_PRINT()` which I suspect is pretty slow) to understand their performance impact.
+
+
 ### Resources Used
 
 Enabling ADebug will incur the following resource costs:

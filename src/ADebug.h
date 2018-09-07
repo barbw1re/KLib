@@ -78,14 +78,15 @@ struct ADebug {
 
     void StartBlock()
     {
-        if (thisBlock < ADEBUG_MAX_BLOCK_DEPTH) {
-            blockTimings[thisBlock++] = micros();
+        if (thisBlock >= ADEBUG_MAX_BLOCK_DEPTH) {
+            // Too many block levels
+            Serial.println(F("* WARNING *"));
+            Serial.println(F("Too many debug block levels"));
             return;
         }
 
-        // Too many block levels
-        Serial.println(F("* WARNING *"));
-        Serial.println(F("Too many debug block levels"));
+        blockTimings[thisBlock] = micros();
+        thisBlock++;
     }
 
     void EndBlock(const __FlashStringHelper *name)
@@ -98,13 +99,14 @@ struct ADebug {
             return;
         }
 
-        unsigned long time = micros() - blockTimings[thisBlock];
         thisBlock--;
 
-        Serial.print(F("Timing for "));
+        unsigned long time = micros() - blockTimings[thisBlock];
+
+        Serial.print(F("Timing for block "));
         Serial.print(name);
         Serial.print(F(": "));
-        if (time > 1000) {
+        if (time > 5000) {
             Serial.print(time / 1000L);
             Serial.println(F(" milliseconds"));
         }
