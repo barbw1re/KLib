@@ -20,10 +20,19 @@ Doing this will not actually include (or provide) any functionality, as in order
 
 After which point the ALed struct and functionality will be available to you.
 
+Alternatively, you may selectively include the modules you wish to use. For example to include the ALed and AButton modules, no `#define` directives are required, simply:
+
+```
+#include <ALed.h>
+#include <AButton.h> 
+```
+
+**Note**: For the ADebug module, you will still need to use the `#define KLIB_ADEBUG` to enable debugging, even if you explicitly `#include <ADebug.h>`.
+
 
 ## ADebug Module
 
-Debugging assistance is provided by the ADebug module. The functionality is available as a selection of macros which allows the module to be enabled and disabled by means of a `#define`. This means that When you want to disable debugging you do not need to remove a bunch of `Serial.print()` calls from you sketch. It is enabled by placing before the `#include <ADebug.h>` or `#include <KLib.h>`:
+Debugging assistance is provided by the ADebug module. The functionality is available as a selection of macros which allows the module to be enabled and disabled by means of a `#define`. This means that when you want to disable debugging you do not need to remove a bunch of `Serial.print()` calls from you sketch. It is enabled by placing before the `#include <ADebug.h>` or `#include <KLib.h>`:
 
 ```
 #define KLIB_ADEBUG
@@ -38,8 +47,8 @@ The primary behaviour of the macros are to output messages through the Serial Mo
 * `ADEBUG_ASSERT(condition)` - If condition fails (is false), an error message will be output including the offending file name and line number.
 * `ADEBUG_WRITE(message)` - Write a fixed message to the serial monitor. This will automatically append a new-line.
 * `ADEBUG_PRINT(format, ...)` - Write a message to the serial monitor using `printf()` format. This will automatically append a new-line.
-* `ADEBUG_START_BLOCK()` - Start a timer to profile a block of code and push onto timing stack. This timer uses `micros()` so is more granular than `millis()`.
-* `ADEBUG_END_BLOCK(name)` - End a timer block and print out the provided name and the time inside the block.
+* `ADEBUG_START_BLOCK()` - Start a timer to profile a block of code and push onto a timing stack. This timer uses `micros()` so is more granular than `millis()`.
+* `ADEBUG_END_BLOCK(name)` - End a timer block and print out the provided name and the time spent inside the block.
 
 
 ### Notes
@@ -63,7 +72,7 @@ Enabling ADebug will incur the following resource costs:
 * Dynamic memory: 271 bytes (about 13% of 2,048 bytes on Arduino Uno)
 
 
-Dynamic memory can be reduced by tuning buffer sizes. This can be done by adding either or both of the following `#include` lines to your sketch (before `#include <ADebug.h>` or `#include <KLib.h>`):
+Dynamic memory can be reduced by tuning buffer sizes. This can be done by adding either or both of the following `#define` lines to your sketch (before `#include <ADebug.h>` or `#include <KLib.h>`):
 
 ```
 #define ADEBUG_MAX_LOG_LENGTH  150
@@ -99,7 +108,7 @@ This module provides momentary push-button functionality. It is enabled via:
 
 #### Notes
 
-To improve consistency in identifying button presses, the button signal will be "debounced" and is only identified as a legitimate press when the button is held down for at least 50ms. This value may be modified by adding the following `#define` (before #including AButton.h or KLib.h):
+To improve consistency in identifying button presses, the button signal will be "debounced" and is only identified as a legitimate press when the button is held down for at least 50ms. This value may be modified by adding the following `#define` (before `#include <AButton.h>` or `#include <KLib.h>`):
 
 ```
 // Reduce debounce threshold to 10ms
@@ -170,7 +179,7 @@ This module provides stepper motor control functionality. It is enabled via:
 
 #### Notes
 
-The stepper motor is configured to run in 9-step mode so if you are used to running in 4-step mode (a-la the standard `<Stepper.h>`) you might find your "Steps per Revolution" are only giving you 1/2 a revolution - just double it!
+The stepper motor is configured to run in 8-step mode so if you are used to running in 4-step mode (a-la the standard `<Stepper.h>`) you might find your "Steps per Revolution" are only giving you 1/2 a revolution - just double it!
 
 
 ### AStorage
@@ -217,7 +226,7 @@ storage.Read(&data, sizeof(MyData));
 
 The `Read()` and `Write()` functions should be pretty safe (assuming you don't provide a size greater than what your data is pointing to) as the copying will stop once it has reached the specified size or the storage capacity.
 
-**NOTE**: This means that you can get unexpected results if you change the value of `capacity` - so sensible behaviour is advised.
+**Note**: This means that you can get unexpected results if you change the value of `capacity` - so sensible behaviour is advised.
 
 If you try to read more than the storage capacity, all additional data will be set to `'\0'`.
 
