@@ -3,7 +3,6 @@
 // Make sure you add defines to enable required modules before including KLib.h
 //#define KLIB_ABUTTON    // Comment out to disable AButton module
 #define KLIB_ALED       // Comment out to disable ALed module
-//#define KLIB_ASTEPPER   // Comment out to disable AStepper module
 #define KLIB_ASTORAGE   // Comment out to disable AStorage module
 
 // Comment out to disable ADebug module
