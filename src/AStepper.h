@@ -41,6 +41,7 @@ struct AStepper {
 
         // Validate configuration
         if (!stepsPerRev) return;
+
         for (byte pin = 0; pin < 4; pin++) {
             if (!pins[pin]) return;
         }
@@ -50,12 +51,14 @@ struct AStepper {
             pinMode(pins[pin], OUTPUT);
             digitalWrite(pins[pin], 0);
         }
+
+        enabled = true;
     }
 
     void Automate()
     {
         // Setup a TIMER0_COMPA interrupt
-        // Will fire once a millisecind,
+        // Will fire once a millisecond,
         // whenever the counter value passes 0xAF
         OCR0A = 0xAF;
         TIMSK0 |= _BV(OCIE0A);
@@ -98,7 +101,7 @@ struct AStepper {
 
         if (Elapsed(stepCounter) >= stepDelay) {
             // Time for next step
-            stepCounter = millis();
+            stepCounter = micros();
             Step(stepForward);
             stepsRemaining--;
         }
@@ -131,7 +134,7 @@ private:
 
     unsigned long Elapsed(const unsigned long lastCounter)
     {
-        unsigned long endCounter = millis();
+        unsigned long endCounter = micros();
 
         return (lastCounter <= endCounter)
             ? (endCounter - lastCounter)

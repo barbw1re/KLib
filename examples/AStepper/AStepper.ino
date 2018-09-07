@@ -18,7 +18,7 @@ void setup()
 
     #ifdef ALSO_BLINK
     led.Setup(13);          // On-board LED - pin 13
-    led.Blink(500, 2000);   // Blink every 0.5 secs starting in 2 seconds
+    led.Pulse(500, 2000);   // Pulse for 0.5 secs starting in 2 seconds
     #endif
 
     // Stepper motor on pins 8, 9, 10, 11
