@@ -1,6 +1,10 @@
 #ifndef _KLIB_H_
 #define _KLIB_H_
 
+#ifdef KLIB_ABUTTON
+#include "AButton.h"
+#endif
+
 #ifdef KLIB_ALED
 #include "ALed.h"
 #endif

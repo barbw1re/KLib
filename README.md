@@ -26,6 +26,33 @@ After which point the ALed struct and functionality will be available to you.
 Following are the modules provided by this library.
 
 
+### AButton
+
+This module provides momentary push-button functionality. It is enabled via:
+
+```
+#define KLIB_ABUTTON
+```
+
+
+#### Function Overview
+
+* `Setup(const byte buttonPin)` - Initialise button on specified pin.
+* `Register(void (*onPress)())` - Register a callback to be called when button is pressed.
+* `Pressed()` - Returns a boolean indicating whether the button is current depressed or not.
+* `Update()` - Call in main loop to ensure non-blocking button checking
+
+
+#### Notes
+
+To improve consistency in identifying button presses, the button signal will be "debounced" and is only identified as a legitimate press when the button is held down for at least 50ms. This value may be modified by adding the following `#define` (before #including AButton.h or KLib.h):
+
+```
+// Reduce debounce threshold to 10ms
+#define ABUTTON_MIN_DOWN 10
+```
+
+
 ### ALed
 
 This module provides LED functionality. It is enabled via:
@@ -38,7 +65,7 @@ This module provides LED functionality. It is enabled via:
 #### Function Overview
 
 * `Setup(const byte pin)` - Initialise LED on specified pin.
-* `Update()` - Call in main loop to ensure non-blocking `Flash()` and `Blink()` (see below).
+* `Update()` - Call in main loop to ensure non-blocking `Flash()`, `Blink()`, and `Pulse()` (see below).
 * `On()` - Turn LED on.
 * `Off()` - Turn LED off.
 * `Flash(const unsigned int interval, const unsigned int delay)` - After waiting `delay` milliseconds, toggle the LED, wait for `interval` milliseconds, and toggle the LED again. This is a one-time `Blink()` (see below). **Note**: Current implementation for `interval` and `delay` are limited to about 65 seconds as they are `unsigned int` values.
