@@ -21,6 +21,60 @@ Doing this will not actually include (or provide) any functionality, as in order
 After which point the ALed struct and functionality will be available to you.
 
 
+## ADebug Module
+
+Debugging assistance is provided by the ADebug module. The functionality is available as a selection of macros which allows the module to be enabled and disabled by means of a `#define`. This means that When you want to disable debugging you do not need to remove a bunch of `Serial.print()` calls from you sketch. It is enabled by placing before the `#include <ADebug.h>` or `#include <KLib.h>`:
+
+```
+#define KLIB_ADEBUG
+```
+
+
+### Debug Macros
+
+The primary behaviour of the macros are to output messages through the Serial Monitor. They are:
+
+* `ADEBUG_SETUP(baud)` - Initialise the ADebug module and specify the Serial baud rate.
+* `ADEBUG_ASSERT(condition)` - If condition fails (is false), an error message will be output including the offending file name and line number.
+* `ADEBUG_WRITE(message)` - Write a fixed message to the serial monitor. This will automatically append a new-line.
+* `ADEBUG_PRINT(format, ...)` - Write a message to the serial monitor using `printf()` format. This will automatically append a new-line.
+* `ADEBUG_START_BLOCK()` - Start a timer to profile a block of code and push onto timing stack. This timer uses `micros()` so is more granular than `millis()`.
+* `ADEBUG_END_BLOCK(name)` - End a timer block and print out the provided name and the time inside the block.
+
+
+### Notes
+
+**Important**: Calling these macros should be performed as though they were functions so terminate them with a semi-colon!
+
+The `ADEBUG_START_BLOCK()` and `ADEBUG_END_BLOCK()` are stack-based, so care should be taken to ensure all child blocks are ended before trying to end the parent block.
+
+The macros `ADEBUG_WRITE()` and `ADEBUG_END_BLOCK()` expect a `__FlashStringHelper` be provided to them so you should use the `F()` macro when calling them, such as:
+
+```
+ADEBUG_WRITE(F("Started Blink Code"));
+```
+
+
+### Resources Used
+
+Enabling ADebug will incur the following resource costs:
+
+* Program storage: 2,408 bytes (about 7.5% of 32,256 bytes on Arduino Uno)
+* Dynamic memory: 271 bytes (about 13% of 2,048 bytes on Arduino Uno)
+
+
+Dynamic memory can be reduced by tuning buffer sizes. This can be done by adding either or both of the following `#include` lines to your sketch (before `#include <ADebug.h>` or `#include <KLib.h>`):
+
+```
+#define ADEBUG_MAX_LOG_LENGTH  150
+#define ADEBUG_MAX_BLOCK_DEPTH 10
+```
+
+`ADEBUG_MAX_LOG_LENGTH` defines the size of the string buffer used by `ADEBUG_PRINT()`. If you do not use this macro, feel free to set to `1` (I would not set to 0 or anything crazy like -1).
+
+`ADEBUG_MAX_BLOCK_DEPTH` defines the code block maximum stack depth. Each entry is a `long` taking 4-bytes so if you don't nest your `ADEBUG_START_BLOCK()` and `ADEBUG_END_BLOCK()` calls (or don't use them at all) feel free to reduce this to `1` (again, I would not recommend setting to a value less than 1).
+
+
 ## Available Modules
 
 Following are the modules provided by this library.
