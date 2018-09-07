@@ -24,14 +24,14 @@ struct ALed {
      */
     ALed()
     {
-        pin = 0;
-        enabled = false;
+        pin      = 0;
+        enabled  = false;
         blinking = false;
     }
 
     void Setup(const byte ledPin)
     {
-        if (active)      return;    // Already setup
+        if (enabled)     return;    // Already setup
         if (ledPin == 0) return;    // Invalid pin
 
         // @todo: More comprehensively ensure pin is within valid range
@@ -40,8 +40,8 @@ struct ALed {
         pinMode(pin, OUTPUT);
 
         digitalWrite(pin, LOW);
+        active = false;
 
-        active  = false;
         enabled = true;
     }
 
@@ -106,10 +106,10 @@ struct ALed {
         blinking = true;
         flashing = false;
 
-        blinkPulse = 0;
-        blinkDelay = delay;
+        blinkPulse    = 0;
+        blinkDelay    = delay;
         blinkInterval = interval;
-        blinkStarted = millis();
+        blinkStarted  = millis();
 
         if (delay == 0) {
             Toggle();
