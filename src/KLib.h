@@ -21,4 +21,16 @@
 #include "AStorage.h"
 #endif
 
+/**
+ * Common helpers - maybe enable via #ifdef
+ */
+unsigned long KLIB_Elapsed(const unsigned long endCounter, const unsigned long lastCounter)
+{
+    static const unsigned long maxLong = -1lu;
+
+    return (lastCounter <= endCounter)
+        ? (endCounter - lastCounter)
+        : (maxLong - lastCounter + endCounter);
+}
+
 #endif
