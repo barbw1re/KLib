@@ -2,12 +2,13 @@
 #define _ASTEPPER_H_
 
 #include <Arduino.h>
+#include "KLib.h"
 
 #define ASTEPPER_STEP_COUNT    8
 #define ASTEPPER_DEFAULT_SPEED 12
 
 struct AStepper;
-static AStepper *astep_stepper;
+static AStepper *astep_stepper; // Global pointer for interrupt access
 
 struct AStepper {
     // General configuration
@@ -24,12 +25,19 @@ struct AStepper {
     unsigned long stepCounter;
     unsigned long stepsRemaining;
 
+    /**
+     * Constructor - Set AStepper as inactive.
+     */
     AStepper()
     {
-        active = false;
-        enabled = false;
+        active        = false;
+        enabled       = false;
+        astep_stepper = NULL;
     }
 
+    /**
+     * Setup - configure AStepper.
+     */
     void Setup(const byte pinA, const byte pinB, const byte pinC, const byte pinD, const unsigned int stepsPerRevolution)
     {
         pins[0] = pinA;
@@ -55,8 +63,13 @@ struct AStepper {
         enabled = true;
     }
 
+    /**
+     * Automate - initialise self-timed interrupt for rotation.
+     */
     void Automate()
     {
+        if (astep_stepper) return;
+
         // Setup a TIMER0_COMPA interrupt
         // Will fire once a millisecond,
         // whenever the counter value passes 0xAF
@@ -65,7 +78,11 @@ struct AStepper {
         astep_stepper = this;
     }
 
-    void Rotate(const float revolutions, const bool forward = true, const unsigned int speed = 0)
+    /**
+     * Rotate - trigger AStepper to start rotating the specified number of
+     *          revolutions, in the specified direction, at the specified speed.
+     */
+    void Rotate(const float revolutions, const bool forward, const unsigned int speed = 0)
     {
         stepCounter = 0;
         stepForward = forward;
@@ -77,6 +94,9 @@ struct AStepper {
         Update();
     }
 
+    /**
+     * Stop - immediately stop rotating and disable AStepper.
+     */
     void Stop()
     {
         if (!enabled) return;
@@ -89,6 +109,9 @@ struct AStepper {
         }
     }
 
+    /**
+     * Update - check if AStepper should move and if so do.
+     */
     void Update()
     {
         if (!enabled) return;
@@ -99,7 +122,7 @@ struct AStepper {
             return;
         }
 
-        if (Elapsed(stepCounter) >= stepDelay) {
+        if (KLIB_Elapsed(micros(), stepCounter) >= stepDelay) {
             // Time for next step
             stepCounter = micros();
             Step(stepForward);
@@ -108,9 +131,10 @@ struct AStepper {
     }
 
 private:
-    unsigned long maxLong = -1lu;
-
-    void Step(const bool forward = true)
+    /**
+     * Step - move AStepper one step in the specified direction.
+     */
+    void Step(const bool forward)
     {
         if (!enabled) return;
 
@@ -131,17 +155,11 @@ private:
             currentStep = 0;
         }
     }
-
-    unsigned long Elapsed(const unsigned long lastCounter)
-    {
-        unsigned long endCounter = micros();
-
-        return (lastCounter <= endCounter)
-            ? (endCounter - lastCounter)
-            : (maxLong - lastCounter + endCounter);
-    }
 };
 
+/**
+ * Timer interrupt handler.
+ */
 SIGNAL(TIMER0_COMPA_vect)
 {
     if (astep_stepper) {

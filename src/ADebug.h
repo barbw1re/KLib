@@ -11,6 +11,7 @@
 #else
 
 #include <Arduino.h>
+#include "KLib.h"
 
 #define ADEBUG_SETUP(baud)        adbg_debugger.Setup(baud)
 #define ADEBUG_ASSERT(condition)  adbg_debugger.Assert(condition, __FILE__, __LINE__)
@@ -36,12 +37,18 @@ struct ADebug {
     byte thisBlock;
     unsigned long blockTimings[ADEBUG_MAX_BLOCK_DEPTH];
 
+    /**
+     * Constructor - initialise buffers and block timings.
+     */
     ADebug()
     {
         thisBlock = 0;
         logBuffer[0] = '\0';
     }
 
+    /**
+     * Setup - initialise Serial output.
+     */
     void Setup(unsigned int baud)
     {
         Serial.begin(baud);
@@ -53,6 +60,9 @@ struct ADebug {
         Serial.println(F("Debug Started"));
     }
 
+    /**
+     * Assert - ensure an expected condition is met.
+     */
     void Assert(const bool condition, const char *file, const int line)
     {
         if (condition) return;
@@ -61,11 +71,17 @@ struct ADebug {
         Print("Assert failed at %s:%d", file, line);
     }
 
+    /**
+     * Write - output a fixed string message.
+     */
     void Write(const __FlashStringHelper *message)
     {
         Serial.println(message);
     }
 
+    /**
+     * Print - construct and out a parameterised message.
+     */
     void Print(const char *format, ...)
     {
         va_list args;
@@ -76,6 +92,9 @@ struct ADebug {
         }
     }
 
+    /**
+     * StartBlock - start timing for profiling a code block.
+     */
     void StartBlock()
     {
         if (thisBlock >= ADEBUG_MAX_BLOCK_DEPTH) {
@@ -89,6 +108,9 @@ struct ADebug {
         thisBlock++;
     }
 
+    /**
+     * EndBlock - complete profile timing for a code block and output the results.
+     */
     void EndBlock(const __FlashStringHelper *name)
     {
         if (thisBlock == 0) {
@@ -101,7 +123,7 @@ struct ADebug {
 
         thisBlock--;
 
-        unsigned long time = micros() - blockTimings[thisBlock];
+        unsigned long time = KLIB_Elapsed(micros(), blockTimings[thisBlock]);
 
         Serial.print(F("Timing for block "));
         Serial.print(name);
@@ -117,6 +139,7 @@ struct ADebug {
     }
 };
 
+// Global ADebug struct
 static ADebug adbg_debugger;
 
 #endif

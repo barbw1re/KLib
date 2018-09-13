@@ -2,6 +2,7 @@
 #define _ABUTTON_H_
 
 #include <Arduino.h>
+#include "KLib.h"
 
 #ifndef ABUTTON_MIN_DOWN
 // Only register a button click if it is depressed for 50ms
@@ -14,12 +15,19 @@ struct AButton {
     bool enabled;
     void (*callback)();
 
+    /**
+     * Constructir - initialise struct data.
+     */
     AButton()
     {
-        pin = 0;
-        enabled = false;
+        pin      = 0;
+        enabled  = false;
+        callback = NULL;
     }
 
+    /**
+     * Setup - configure AButton.
+     */
     void Setup(const byte buttonPin)
     {
         if (enabled)        return;    // Already setup
@@ -33,11 +41,17 @@ struct AButton {
         enabled = true;
     }
 
+    /**
+     * Register - Provide callback function for AButton press handling.
+     */
     void Register(void (*onPress)())
     {
         callback = onPress;
     }
 
+    /**
+     * Pressed - is AButton currently depressed?
+     */
     bool Pressed()
     {
         if (!enabled) return false;
@@ -47,6 +61,10 @@ struct AButton {
             : false;
     }
 
+    /**
+     * Update - check if AButton has completed a press action
+     *          and if so fire callback (if configured to do so).
+     */
     void Update()
     {
         if (!enabled)  return;
@@ -62,23 +80,11 @@ struct AButton {
             }
         }
         else if (wasPressed) {
-            if (Elapsed(startPressed) >= ABUTTON_MIN_DOWN) {
+            if (KLIB_Elapsed(millis(), startPressed) >= ABUTTON_MIN_DOWN) {
                 callback();
             }
             wasPressed = false;
         }
-    }
-
-private:
-    unsigned long maxLong = -1lu;
-
-    unsigned long Elapsed(const unsigned long lastCounter)
-    {
-        unsigned long endCounter = millis();
-
-        return (lastCounter <= endCounter)
-            ? (endCounter - lastCounter)
-            : (maxLong - lastCounter + endCounter);
     }
 };
 

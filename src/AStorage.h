@@ -8,11 +8,17 @@ struct AStorage {
     // EEPROM capacity
     unsigned int capacity;
 
+    /**
+     * Constructor - initialise AStorage capacity.
+     */
     AStorage()
     {
         capacity = EEPROM.length();
     }
 
+    /**
+     * Read - copy the EEPROM contents to data.
+     */
     void Read(void *data, unsigned int size)
     {
         if (size == 0) return;
@@ -30,6 +36,9 @@ struct AStorage {
         }
     }
 
+    /**
+     * Write - copy the data to the EEPROM.
+     */
     void Write(const void *data, unsigned int size)
     {
         if (size == 0) return;

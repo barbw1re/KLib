@@ -2,6 +2,7 @@
 #define _KLIB_ALED_H_
 
 #include <Arduino.h>
+#include "KLib.h"
 
 struct ALed {
     // General configuration
@@ -20,7 +21,7 @@ struct ALed {
     unsigned long blinkStarted;     // Value of millis() when blink started
 
     /**
-     * Constructor - initialise some values
+     * Constructor - initialise core values.
      */
     ALed()
     {
@@ -29,6 +30,9 @@ struct ALed {
         blinking = false;
     }
 
+    /**
+     * Setup - configure ALed.
+     */
     void Setup(const byte ledPin)
     {
         if (enabled)     return;    // Already setup
@@ -45,12 +49,15 @@ struct ALed {
         enabled = true;
     }
 
+    /**
+     * Update - check if ALed should toggle and do so if required.
+     */
     void Update()
     {
         if (!enabled)  return;
         if (!blinking) return;
 
-        unsigned long elapsed = Elapsed(blinkStarted);
+        unsigned long elapsed = KLIB_Elapsed(millis(), blinkStarted);
 
         if (blinkDelay > 0) {
             if (elapsed >= blinkDelay) {
@@ -77,6 +84,9 @@ struct ALed {
         blinkStarted = millis();
     }
 
+    /**
+     * On - turn ALed on.
+     */
     void On()
     {
         // @todo: Decide (and implement) how this should behave if mid-blink
@@ -87,6 +97,9 @@ struct ALed {
         }
     }
 
+    /**
+     * Off - turn ALed off.
+     */
     void Off()
     {
         // @todo: Decide (and implement) how this should behave if mid-blink
@@ -97,6 +110,9 @@ struct ALed {
         }
     }
 
+    /**
+     * Blink - initiate a blink of ALed.
+     */
     void Blink(const unsigned int interval, const unsigned int delay)
     {
         if (!enabled)  return;
@@ -116,12 +132,18 @@ struct ALed {
         }
     }
 
+    /**
+     * Pulse - initiate pulse-flashing of ALed.
+     */
     void Pulse(const unsigned int interval, const unsigned int delay)
     {
         Blink(interval, delay);
         blinkPulse = delay;
     }
 
+    /**
+     * Flash - initiate flashing of ALed.
+     */
     void Flash(const unsigned int interval, const unsigned int delay)
     {
         Blink(interval, delay);
@@ -129,8 +151,9 @@ struct ALed {
     }
 
 private:
-    unsigned long maxLong = -1lu;
-
+    /**
+     * Toggle - Switch ALed between on and off.
+     */
     void Toggle()
     {
         if (!enabled) return;
@@ -141,15 +164,6 @@ private:
         else {
             On();
         }
-    }
-
-    unsigned long Elapsed(const unsigned long lastCounter)
-    {
-        unsigned long endCounter = millis();
-
-        return (lastCounter <= endCounter)
-            ? (endCounter - lastCounter)
-            : (maxLong - lastCounter + endCounter);
     }
 };
 
