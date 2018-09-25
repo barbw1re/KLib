@@ -177,16 +177,17 @@ This module provides servo motor control functionality. It is enabled via:
 
 #### Function Overview
 
-* `Setup(const byte pin)` - Initialise servo motor on specified pin.
+* `Setup(const byte pin, unsigned int min = 0, unsigned int max = 180)` - Initialise servo motor on specified pin, optionally bounding the rotation to the provided min and max degrees.
 * `Reset()` - Move the servo motor back to the 0-degrees position.
 * `Forward()` - Move the servo forward 1 degree (if available). Returns boolean indicating whether further advances are possible.
 * `Backward()` - Move the servo backward 1 degree (if available). Returns boolean indicating whether further advances are possible.
-* `MoveTo(unsigned int degrees)` - Rotate the sevo to the specified degree position.
+* `JumpTo(unsigned int degrees)` - Rotate the servo directly to the specified degree position.
+* `MoveTo(unsigned int degrees, unsigned int speed)` - Rotate the servo to the specified degree position, step-by-step waiting `speed` milliseconds between each degree.
 
 
 #### TODOs
 
-Determine if moving (more than 1 degree) should be performed incrementally (ie animated) rather than jumped to.
+Update MoveTo() to support a non-blocking animation and refine the `speed` parameter to something helpful.
 
 
 ### AStepper

@@ -8,8 +8,10 @@ unsigned long timer;
 
 void setup()
 {
-    servo.Setup(9);     // Initialise servo on pin 9.
-                        // Will also reset motor to 0-degrees position
+    // Initialise servo on pin 9.
+    // Valid range is from 15-degrees to 165-degrees.
+    // Will reset motor to 0-degrees position (15-degrees).
+    servo.Setup(9, 15, 165);
 
     timer = millis();   // Start the timer
 }

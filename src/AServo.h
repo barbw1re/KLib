@@ -4,15 +4,21 @@
 #include <Arduino.h>
 #include <Servo.h>
 
-// Degree range
+// Default degree range
 #define ASERVO_MIN  0
 #define ASERVO_MAX  180
 
 struct AServo {
+    // General configuration
     byte pin;
     Servo servo;
     bool enabled;
 
+    // Acceptable rotation range
+    unsigned int minPosition;
+    unsigned int maxPosition;
+
+    // Current rotation state
     unsigned int position;
 
     /**
@@ -20,21 +26,28 @@ struct AServo {
      */
     AServo()
     {
-        position = ASERVO_MAX + 1;
-        enabled  = false;
+        enabled = false;
     }
 
     /**
      * Setup - initialise servo motor
      */
-    void Setup(const byte servoPin)
+    void Setup(const byte servoPin, unsigned int min = ASERVO_MIN, unsigned int max = ASERVO_MAX)
     {
         if (enabled) return;
 
+        if (max > ASERVO_MAX) max = ASERVO_MAX;
+        if (min > max)        min = max;
+
+        minPosition = min;
+        maxPosition = max;
+
         pin = servoPin;
         servo.attach(pin);
+
         enabled = true;
 
+        position = max;
         Reset();
     }
 
@@ -46,7 +59,7 @@ struct AServo {
         if (!enabled)      return;
         if (position == 0) return;
 
-        MoveTo(0);
+        JumpTo(0);
     }
 
     /**
@@ -54,12 +67,12 @@ struct AServo {
      */
     bool Forward()
     {
-        if (!enabled)               return false;
-        if (position >= ASERVO_MAX) return false;
+        if (!enabled)                return false;
+        if (position >= maxPosition) return false;
 
-        MoveTo(position + 1);
+        JumpTo(position + 1);
 
-        return (position < ASERVO_MAX);
+        return (position < maxPosition);
     }
 
     /**
@@ -67,30 +80,59 @@ struct AServo {
      */
     bool Backward()
     {
-        if (!enabled)               return false;
-        if (position <= ASERVO_MIN) return false;
+        if (!enabled)                return false;
+        if (position <= minPosition) return false;
 
-        MoveTo(position - 1);
+        JumpTo(position - 1);
 
-        return (position > ASERVO_MIN);
+        return (position > minPosition);
     }
 
     /**
-     * MoveTo - move to specified position (and store new position).
+     * JumpTo - jump to specified position (and store new position).
      */
-    void MoveTo(unsigned int degrees)
+    void JumpTo(unsigned int degrees)
     {
         if (!enabled) return;
 
-        if (degrees <= ASERVO_MIN) {
-            degrees = ASERVO_MIN;
+        if (degrees < minPosition) {
+            degrees = minPosition;
         }
-        else if (degrees >= ASERVO_MAX) {
-            degrees = ASERVO_MAX;
+        else if (degrees > maxPosition) {
+            degrees = maxPosition;
         }
 
         position = degrees;
         servo.write(position);
+    }
+
+    /**
+     * MoveTo - slowly move to specified position (and store new position)
+     */
+    void MoveTo(unsigned int degrees, const unsigned int speed)
+    {
+        if (!enabled) return;
+
+        if (degrees < minPosition) {
+            degrees = minPosition;
+        }
+        else if (degrees > maxPosition) {
+            degrees = maxPosition;
+        }
+
+        if (degrees == position) return;
+
+        // @TODO: Animate this without blocking
+
+        while (position != degrees) {
+            if (position < degrees) {
+                Forward();
+            }
+            else {
+                Backward();
+            }
+            delay(speed);
+        }
     }
 };
 
