@@ -45,7 +45,7 @@ struct AServo {
         pin = servoPin;
         servo.attach(pin);
 
-        enabled = true;
+        enabled = servo.attached();
 
         position = max;
         Reset();
