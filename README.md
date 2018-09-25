@@ -166,6 +166,29 @@ There is only a very naive validation of the pin provided to `Setup()` and unles
 Calling `On()` or `Off()` does not care if the LED is currently Blinking/Flashing/Pulsing so doing so may affect (invert) your programs concept of **On** and **Off**.
 
 
+### AServo
+
+This module provides servo motor control functionality. It is enabled via:
+
+```
+#define KLIB_ASERVO
+```
+
+
+#### Function Overview
+
+* `Setup(const byte pin)` - Initialise servo motor on specified pin.
+* `Reset()` - Move the servo motor back to the 0-degrees position.
+* `Forward()` - Move the servo forward 1 degree (if available). Returns boolean indicating whether further advances are possible.
+* `Backward()` - Move the servo backward 1 degree (if available). Returns boolean indicating whether further advances are possible.
+* `MoveTo(unsigned int degrees)` - Rotate the sevo to the specified degree position.
+
+
+#### TODOs
+
+Determine if moving (more than 1 degree) should be performed incrementally (ie animated) rather than jumped to.
+
+
 ### AStepper
 
 This module provides stepper motor control functionality. It is enabled via:

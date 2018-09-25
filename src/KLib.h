@@ -30,6 +30,10 @@ unsigned long KLIB_Elapsed(const unsigned long endCounter, const unsigned long l
 #include "ALed.h"
 #endif
 
+#ifdef KLIB_ASERVO
+#include "AServo.h"
+#endif
+
 #ifdef KLIB_ASTEPPER
 #include "AStepper.h"
 #endif
