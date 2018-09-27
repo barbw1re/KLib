@@ -7,19 +7,26 @@ example_klib:
         - cp src/* /usr/local/share/arduino-1.8.5//libraries/KLib/
         - arduino --verbose --verify examples/KLib/KLib.ino
 
-example_astepper:
-    stage: build
-    script:
-        - mkdir -p /usr/local/share/arduino-1.8.5//libraries/KLib
-        - cp src/* /usr/local/share/arduino-1.8.5//libraries/KLib/
-        - arduino --verbose --verify examples/AStepper/AStepper.ino
-
 example_aled:
     stage: build
     script:
         - mkdir -p /usr/local/share/arduino-1.8.5//libraries/KLib
         - cp src/* /usr/local/share/arduino-1.8.5//libraries/KLib/
         - arduino --verbose --verify examples/ALed/ALed.ino
+
+example_aservo:
+    stage: build
+    script:
+        - mkdir -p /usr/local/share/arduino-1.8.5//libraries/KLib
+        - cp src/* /usr/local/share/arduino-1.8.5//libraries/KLib/
+        - arduino --verbose --verify examples/AServo/AServo.ino
+
+example_astepper:
+    stage: build
+    script:
+        - mkdir -p /usr/local/share/arduino-1.8.5//libraries/KLib
+        - cp src/* /usr/local/share/arduino-1.8.5//libraries/KLib/
+        - arduino --verbose --verify examples/AStepper/AStepper.ino
 
 example_astorage:
     stage: build
