@@ -3,6 +3,13 @@
 A library providing general abstractions of common Arduino functionality.
 
 
+## Code Status
+
+[![pipeline status](http://git.kdjonline.com/arduino/KLib/badges/v1.0/pipeline.svg)](http://git.kdjonline.com/arduino/KLib/commits/v1.0)
+
+[![coverage report](http://git.kdjonline.com/arduino/KLib/badges/v1.0/coverage.svg)](http://git.kdjonline.com/arduino/KLib/commits/v1.0)
+
+
 ## General Usage
 
 The library functionality is available upon including the main header file:
