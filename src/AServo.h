@@ -8,6 +8,9 @@
 #define ASERVO_MIN  0
 #define ASERVO_MAX  180
 
+// Map an input
+#define ASERVO_POS_REMAP(pos, min, max, servoMin, servoMax) ((pos - min) * (servoMax - servoMin) / (max - min) + min)
+
 struct AServo {
     // General configuration
     byte pin;
@@ -21,6 +24,10 @@ struct AServo {
     // Degree substitution map
     unsigned int *positionMap;
 
+    // Degree adjustment
+    unsigned int minServoPos;
+    unsigned int maxServoPos;
+
     // Current rotation state
     unsigned int position;
 
@@ -30,6 +37,8 @@ struct AServo {
     AServo()
     {
         enabled     = false;
+        minServoPos = 0;
+        maxServoPos = 0;
         positionMap = NULL;
     }
 
@@ -111,6 +120,9 @@ struct AServo {
         unsigned int servoPosition = position;
         if (positionMap && positionMap[position]) {
             servoPosition = positionMap[position];
+        }
+        else if (minServoPos > 0 || maxServoPos > 0) {
+            servoPosition = ASERVO_POS_REMAP(position, minPosition, maxPosition, minServoPos, maxServoPos);
         }
 
         servo.write(servoPosition);

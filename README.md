@@ -212,6 +212,20 @@ motor.Forward();
 
 **Note**: If your map adjusts the `min` position and set the map *after* calling `Setup()`, the initial position will have already been moved to using the default (rather than your overridden) mapping, so you should set the `positionMap` *before* calling `Setup()` in this case.
 
+Alternatively - if you find a simple scale recalibration is all that is needed, you can populate `minServoPos` and/or `maxServoPos` and a linear mapping from this scale to `minPosition` and `masPosition` will occur.
+
+For example:
+
+```
+AServo motor;
+motor.Setup();
+
+// 180-degrees is reached when I ask for 160-degrees
+motor.maxServoPos = 160;
+
+motor.JumpTo(180);
+```
+
 
 #### TODOs
 
