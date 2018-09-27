@@ -18,6 +18,9 @@ struct AServo {
     unsigned int minPosition;
     unsigned int maxPosition;
 
+    // Degree substitution map
+    unsigned int *positionMap;
+
     // Current rotation state
     unsigned int position;
 
@@ -26,7 +29,8 @@ struct AServo {
      */
     AServo()
     {
-        enabled = false;
+        enabled     = false;
+        positionMap = NULL;
     }
 
     /**
@@ -103,7 +107,13 @@ struct AServo {
         }
 
         position = degrees;
-        servo.write(position);
+
+        unsigned int servoPosition = position;
+        if (positionMap && positionMap[position]) {
+            servoPosition = positionMap[position];
+        }
+
+        servo.write(servoPosition);
     }
 
     /**

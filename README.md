@@ -185,6 +185,34 @@ This module provides servo motor control functionality. It is enabled via:
 * `MoveTo(unsigned int degrees, unsigned int speed)` - Rotate the servo to the specified degree position, step-by-step waiting `speed` milliseconds between each degree.
 
 
+#### Notes
+
+You may need to adjust the values being sent to the servo motor if they do not exactly correspond to the requested degrees. This is done by creating a position map and pointing the servo structure map to it.
+
+**Warning**: This map should contain values up to your `max` (usually 180, so array will need to contain 181 elements), and any unused elements should be set to `0`. No bounds checking or junk checking is performed. You have been warned!
+
+For example:
+
+```
+unsigned int servoMap[16] = {
+    // Angles 0-4 are unused
+    0, 0, 0, 0, 0,
+
+    // Send "last angle + 2" to motor (after initial 5-degrees)
+    5,  7,  9,  11, 13,
+    15, 17, 19, 21, 23, 25
+};
+
+AServo motor;
+motor.Setup(9, 5, 15);
+motor.positionMap = servoMap;
+
+motor.Forward();
+```
+
+**Note**: If your map adjusts the `min` position and set the map *after* calling `Setup()`, the initial position will have already been moved to using the default (rather than your overridden) mapping, so you should set the `positionMap` *before* calling `Setup()` in this case.
+
+
 #### TODOs
 
 Update MoveTo() to support a non-blocking animation and refine the `speed` parameter to something helpful.
