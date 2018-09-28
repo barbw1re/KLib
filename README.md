@@ -1,11 +1,16 @@
-# KLib
+# KLib [![pipeline status](http://git.kdjonline.com/arduino/KLib/badges/master/pipeline.svg)](http://git.kdjonline.com/arduino/KLib/commits/master)
+
+<img src="http://git.kdjonline.com/arduino/KLib/raw/klib-meta/KLib-Icon.png" align="right" />
 
 A library providing general abstractions of common Arduino functionality.
 
-
-## Code Status
-
-[![pipeline status](http://git.kdjonline.com/arduino/KLib/badges/v1.0/pipeline.svg)](http://git.kdjonline.com/arduino/KLib/commits/v1.0)
+Current list of modules:
+* [AButton](#abutton)
+* [ADebug](#adebug-module)
+* [ALed](#aled)
+* [AServo](#aservo)
+* [AStepper](#astepper)
+* [AStorage](#astorage)
 
 
 ## General Usage
@@ -327,3 +332,23 @@ To achieve this you will need to create a struct containing ints `a` and `b`.
 
 If an elegant way of specifying an offset presents itself (such as something like `storage.ReadFrom(100, &c, sizeof(int));`), it may be implemented.
 
+
+## Versioning
+
+We use [SemVer](http://semver.org/) for versioning. For the versions available, see the [tags on this repository](http://git.kdjonline.com/arduino/KLib/tags).
+
+
+## Authors
+
+* **Kris Johnson** - *Initial work* - [krisj](http://git.kdjonline.com/krisj)
+See also the list of [contributors](http://git.kdjonline.com/arduino/KLib/graphs/master) who participated in this project.
+
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+
+## Acknowledgments
+
+This would not be possible without the amazing work done by the whole [Arduino team](https://www.arduino.cc/).
