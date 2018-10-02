@@ -1,36 +1,34 @@
 image: slepp/arduino
 
-example_klib:
+before_script:
+    - mkdir -p /usr/local/share/arduino-1.8.5//libraries/KLib
+    - cp src/* /usr/local/share/arduino-1.8.5//libraries/KLib/
+
+stages:
+    - build
+    - test
+
+KLib:
     stage: build
     script:
-        - mkdir -p /usr/local/share/arduino-1.8.5//libraries/KLib
-        - cp src/* /usr/local/share/arduino-1.8.5//libraries/KLib/
         - arduino --verbose --verify examples/KLib/KLib.ino
 
-example_aled:
-    stage: build
+ALed:
+    stage: test
     script:
-        - mkdir -p /usr/local/share/arduino-1.8.5//libraries/KLib
-        - cp src/* /usr/local/share/arduino-1.8.5//libraries/KLib/
         - arduino --verbose --verify examples/ALed/ALed.ino
 
-example_aservo:
-    stage: build
+AServo:
+    stage: test
     script:
-        - mkdir -p /usr/local/share/arduino-1.8.5//libraries/KLib
-        - cp src/* /usr/local/share/arduino-1.8.5//libraries/KLib/
         - arduino --verbose --verify examples/AServo/AServo.ino
 
-example_astepper:
-    stage: build
+AStepper:
+    stage: test
     script:
-        - mkdir -p /usr/local/share/arduino-1.8.5//libraries/KLib
-        - cp src/* /usr/local/share/arduino-1.8.5//libraries/KLib/
         - arduino --verbose --verify examples/AStepper/AStepper.ino
 
-example_astorage:
-    stage: build
+AStorage:
+    stage: test
     script:
-        - mkdir -p /usr/local/share/arduino-1.8.5//libraries/KLib
-        - cp src/* /usr/local/share/arduino-1.8.5//libraries/KLib/
         - arduino --verbose --verify examples/AStorage/AStorage.ino
